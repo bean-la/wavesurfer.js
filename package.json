@@ -21,10 +21,10 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/wavesurfer.js",
+  "main": "./dist/wavesurfer.cjs",
   "unpkg": "./dist/wavesurfer.min.js",
-  "module": "./dist/wavesurfer.js",
-  "browser": "./dist/wavesurfer.js",
+  "module": "./dist/wavesurfer.esm.js",
+  "browser": "./dist/wavesurfer.esm.js",
   "types": "./dist/wavesurfer.d.ts",
   "exports": {
     ".": {
@@ -67,7 +67,8 @@
     "test": "cypress run --browser chrome",
     "test:unit": "jest --coverage",
     "serve": "npx live-server --port=9090 --no-browser --ignore='.*,src,cypress,scripts'",
-    "start": "npm run build:dev & npm run serve"
+    "start": "npm run build:dev & npm run serve",
+    "postinstall": "pnpm build"
   },
   "packageManager": "yarn@1.22.22",
   "devDependencies": {
