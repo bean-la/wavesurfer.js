@@ -3,10 +3,22 @@ import typescript from '@rollup/plugin-typescript'
 import terser from '@rollup/plugin-terser'
 import dts from 'rollup-plugin-dts'
 import webWorkerLoader from 'rollup-plugin-web-worker-loader'
+import path from 'path'
 
 const plugins = [
   webWorkerLoader(),
   typescript({ declaration: false, declarationDir: null }),
+  terser({ format: { comments: false } }),
+]
+
+const pluginPlugins = [
+  webWorkerLoader(),
+  typescript({
+    declaration: false,
+    declarationDir: null,
+    outDir: null,
+    noEmit: false
+  }),
   terser({ format: { comments: false } }),
 ]
 
@@ -58,40 +70,37 @@ export default [
       {
         input: plugin,
         output: {
-          file: plugin.replace('src/', 'dist/').replace('.ts', '.js'),
+          file: path.join('dist', path.basename(plugin, '.ts') + '.js'),
           format: 'esm',
         },
-        plugins,
+        plugins: pluginPlugins,
       },
       // ES module again but with an .esm.js extension
       {
         input: plugin,
         output: {
-          file: plugin.replace('src/', 'dist/').replace('.ts', '.esm.js'),
+          file: path.join('dist', path.basename(plugin, '.ts') + '.esm.js'),
           format: 'esm',
         },
-        plugins,
+        plugins: pluginPlugins,
       },
       // CommonJS module (Node.js)
       {
         input: plugin,
         output: {
-          name: plugin.replace('src/plugins/', '').replace('.ts', ''),
-          file: plugin.replace('src/', 'dist/').replace('.ts', '.cjs'),
+          name: path.basename(plugin, '.ts'),
+          file: path.join('dist', path.basename(plugin, '.ts') + '.cjs'),
           format: 'cjs',
           exports: 'default',
         },
-        plugins,
+        plugins: pluginPlugins,
       },
       // UMD (browser script tag)
       {
         input: plugin,
         output: {
-          name: plugin
-            .replace('src/plugins/', '')
-            .replace('.ts', '')
-            .replace(/^./, (c) => `WaveSurfer.${c.toUpperCase()}`),
-          file: plugin.replace('src/', 'dist/').replace('.ts', '.min.js'),
+          name: 'WaveSurfer.' + path.basename(plugin, '.ts').replace(/^./, (c) => c.toUpperCase()),
+          file: path.join('dist', path.basename(plugin, '.ts') + '.min.js'),
           format: 'umd',
           extend: true,
           globals: {
@@ -100,7 +109,7 @@ export default [
           exports: 'default',
         },
         external: ['WaveSurfer'],
-        plugins,
+        plugins: pluginPlugins,
       },
     ])
     .flat(),
