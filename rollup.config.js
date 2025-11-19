@@ -22,6 +22,20 @@ const pluginPlugins = [
   terser({ format: { comments: false } }),
 ]
 
+// Suppress the 'fs' option warning from rollup-plugin-web-worker-loader
+const onwarn = (warning, warn) => {
+  // Suppress the 'fs' option warning from rollup-plugin-web-worker-loader
+  // The plugin tries to use an 'fs' option that's not recognized by Rollup 4
+  const message = warning.message || String(warning)
+  if (
+    message.includes('Unknown input options: fs') ||
+    (message.includes('unrecognized option') && message.includes('fs'))
+  ) {
+    return
+  }
+  warn(warning)
+}
+
 export default [
   // ES module
   {
@@ -31,6 +45,7 @@ export default [
       format: 'esm',
     },
     plugins,
+    onwarn,
   },
   // CommonJS module (Node.js)
   {
@@ -41,6 +56,7 @@ export default [
       exports: 'default',
     },
     plugins,
+    onwarn,
   },
   // UMD (browser script tag)
   {
@@ -52,6 +68,7 @@ export default [
       exports: 'default',
     },
     plugins,
+    onwarn,
   },
 
   // Compiled type definitions
@@ -74,6 +91,7 @@ export default [
           format: 'esm',
         },
         plugins: pluginPlugins,
+        onwarn,
       },
       // ES module again but with an .esm.js extension
       {
@@ -83,6 +101,7 @@ export default [
           format: 'esm',
         },
         plugins: pluginPlugins,
+        onwarn,
       },
       // CommonJS module (Node.js)
       {
@@ -94,6 +113,7 @@ export default [
           exports: 'default',
         },
         plugins: pluginPlugins,
+        onwarn,
       },
       // UMD (browser script tag)
       {
@@ -110,6 +130,7 @@ export default [
         },
         external: ['WaveSurfer'],
         plugins: pluginPlugins,
+        onwarn,
       },
     ])
     .flat(),
