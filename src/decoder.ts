@@ -37,10 +37,24 @@ function createBuffer(channelData: Array<Float32Array | number[]>, duration: num
     length: channelData[0].length,
     sampleRate: channelData[0].length / duration,
     numberOfChannels: channelData.length,
-    getChannelData: (i: number) => channelData?.[i] as Float32Array,
+    getChannelData: ((i: number) => {
+      const data = channelData?.[i]
+      if (data instanceof Float32Array) {
+        // Create a new Float32Array with ArrayBuffer to satisfy type requirements
+        const buffer = new ArrayBuffer(data.byteLength)
+        const result = new Float32Array(buffer)
+        result.set(data)
+        return result
+      }
+      const array = data ?? []
+      const buffer = new ArrayBuffer(array.length * 4)
+      const result = new Float32Array(buffer)
+      result.set(array)
+      return result
+    }) as (channel: number) => Float32Array,
     copyFromChannel: AudioBuffer.prototype.copyFromChannel,
     copyToChannel: AudioBuffer.prototype.copyToChannel,
-  }
+  } as AudioBuffer
 }
 
 const Decoder = {
