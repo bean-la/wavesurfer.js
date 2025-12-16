@@ -55,19 +55,13 @@
   },
   "scripts": {
     "clean": "node ./scripts/clean.cjs",
-    "build:dev": "node ../../node_modules/typescript/bin/tsc -w --target ESNext",
-    "build": "pnpm clean && pnpm install && node ../../node_modules/typescript/bin/tsc && node ../../node_modules/rollup/dist/bin/rollup -c",
+    "build:dev": "pnpm exec tsc -w --target ESNext",
+    "build": "pnpm clean && pnpm install && pnpm exec tsc && pnpm exec rollup -c",
     "prepublishOnly": "pnpm run build",
-    "lint": "node ../../node_modules/eslint/bin/eslint.js \"src/**/*.ts\" --fix",
-    "lint:report": "node ../../node_modules/eslint/bin/eslint.js \"src/**/*.ts\" --output-file eslint_report.json --format json",
-    "prettier": "node ../../node_modules/prettier/bin/prettier.js -w '**/*.{js,ts,css}' --ignore-path .gitignore",
-    "make-plugin": "./scripts/plugin.sh",
-    "cypress": "node ../../node_modules/cypress/bin/cypress open --e2e",
-    "cypress:canary": "node ../../node_modules/cypress/bin/cypress open --e2e -b chrome:canary",
-    "test": "node ../../node_modules/cypress/bin/cypress run --browser chrome",
-    "test:unit": "node ../../node_modules/jest/bin/jest.js --coverage",
-    "serve": "npx live-server --port=9090 --no-browser --ignore='.*,src,cypress,scripts'",
-    "start": "pnpm run build:dev & pnpm run serve"
+    "lint": "pnpm exec eslint \"src/**/*.ts\" --fix",
+    "lint:report": "pnpm exec eslint \"src/**/*.ts\" --output-file eslint_report.json --format json",
+    "prettier": "pnpm exec prettier -w '**/*.{js,ts,css}' --ignore-path .gitignore",
+    "make-plugin": "./scripts/plugin.sh"
   },
   "packageManager": "yarn@1.22.22",
   "devDependencies": {
