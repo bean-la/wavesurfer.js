@@ -5,13 +5,12 @@ import dts from 'rollup-plugin-dts'
 import webWorkerLoader from 'rollup-plugin-web-worker-loader'
 import path from 'path'
 
-const plugins = [
+const basePlugins = [
   webWorkerLoader(),
   typescript({ declaration: false, declarationDir: null }),
-  terser({ format: { comments: false } }),
 ]
 
-const pluginPlugins = [
+const basePluginPlugins = [
   webWorkerLoader(),
   typescript({
     declaration: false,
@@ -19,8 +18,9 @@ const pluginPlugins = [
     outDir: null,
     noEmit: false
   }),
-  terser({ format: { comments: false } }),
 ]
+
+const pluginsWithTerser = [...basePlugins, terser({ format: { comments: false } })]
 
 // Suppress the 'fs' option warning from rollup-plugin-web-worker-loader
 const onwarn = (warning, warn) => {
@@ -44,7 +44,7 @@ export default [
       file: 'dist/wavesurfer.esm.js',
       format: 'esm',
     },
-    plugins,
+    plugins: basePlugins,
     onwarn,
   },
   // CommonJS module (Node.js)
@@ -55,10 +55,10 @@ export default [
       format: 'cjs',
       exports: 'default',
     },
-    plugins,
+    plugins: basePlugins,
     onwarn,
   },
-  // UMD (browser script tag)
+  // UMD (browser script tag, minified)
   {
     input: 'src/wavesurfer.ts',
     output: {
@@ -67,7 +67,7 @@ export default [
       format: 'umd',
       exports: 'default',
     },
-    plugins,
+    plugins: pluginsWithTerser,
     onwarn,
   },
 
@@ -90,7 +90,7 @@ export default [
           file: path.join('dist', path.basename(plugin, '.ts') + '.js'),
           format: 'esm',
         },
-        plugins: pluginPlugins,
+        plugins: basePluginPlugins,
         onwarn,
       },
       // ES module again but with an .esm.js extension
@@ -100,7 +100,7 @@ export default [
           file: path.join('dist', path.basename(plugin, '.ts') + '.esm.js'),
           format: 'esm',
         },
-        plugins: pluginPlugins,
+        plugins: basePluginPlugins,
         onwarn,
       },
       // CommonJS module (Node.js)
@@ -112,10 +112,10 @@ export default [
           format: 'cjs',
           exports: 'default',
         },
-        plugins: pluginPlugins,
+        plugins: basePluginPlugins,
         onwarn,
       },
-      // UMD (browser script tag)
+      // UMD (browser script tag, minified)
       {
         input: plugin,
         output: {
@@ -129,7 +129,7 @@ export default [
           exports: 'default',
         },
         external: ['WaveSurfer'],
-        plugins: pluginPlugins,
+        plugins: [...basePluginPlugins, terser({ format: { comments: false } })],
         onwarn,
       },
     ])
