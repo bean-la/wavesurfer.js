@@ -64,6 +64,9 @@
     "make-plugin": "./scripts/plugin.sh"
   },
   "packageManager": "yarn@1.22.22",
+  "dependencies": {
+    "tslib": "^2.8.1"
+  },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
