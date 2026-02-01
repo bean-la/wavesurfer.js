@@ -16,6 +16,7 @@
   "exclude": [
     "node_modules",
     "cypress",
-    "dist"
+    "dist",
+    "src/__tests__"
   ]
 }
