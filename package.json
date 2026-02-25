@@ -56,7 +56,7 @@
   "scripts": {
     "clean": "node ./scripts/clean.cjs",
     "build:dev": "pnpm exec tsc -w --target ESNext",
-    "build": "pnpm clean && pnpm exec tsc && pnpm exec rollup -c",
+    "build": "pnpm clean; pnpm exec tsc; pnpm exec rollup -c",
     "prepublishOnly": "pnpm run build",
     "lint": "pnpm exec eslint \"src/**/*.ts\" --fix",
     "lint:report": "pnpm exec eslint \"src/**/*.ts\" --output-file eslint_report.json --format json",
