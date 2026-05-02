@@ -37,7 +37,7 @@ function createBuffer(channelData: Array<Float32Array | number[]>, duration: num
     length: channelData[0].length,
     sampleRate: channelData[0].length / duration,
     numberOfChannels: channelData.length,
-    getChannelData: ((i: number) => {
+    getChannelData: ((i: number): Float32Array<ArrayBuffer> => {
       const data = channelData?.[i]
       if (data instanceof Float32Array) {
         // Create a new Float32Array with ArrayBuffer to satisfy type requirements
@@ -51,7 +51,7 @@ function createBuffer(channelData: Array<Float32Array | number[]>, duration: num
       const result = new Float32Array(buffer)
       result.set(array)
       return result
-    }) as (channel: number) => Float32Array,
+    }) as (channel: number) => Float32Array<ArrayBuffer>,
     copyFromChannel: AudioBuffer.prototype.copyFromChannel,
     copyToChannel: AudioBuffer.prototype.copyToChannel,
   } as AudioBuffer
